@@ -1,1 +1,1 @@
-# covid19-testing
+Prototype: https://bw2.github.io/covid19-testing/
