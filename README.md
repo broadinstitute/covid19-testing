@@ -1,1 +1,1 @@
-Prototype: https://bw2.github.io/covid19-testing/
+https://covid19-testing.broadinstitute.org/
