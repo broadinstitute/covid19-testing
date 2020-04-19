@@ -26,7 +26,11 @@ def compute_template_args():
     for entry in data['results']:
         day = entry['day']
         category = entry['result']
-        category = CATEGORY_MAP[category]
+        try:
+            category = CATEGORY_MAP[category]
+        except KeyError as e:
+            print("WARNING: unknown cateory: " + str(category) + " in entry: " + str(entry))
+            continue
 
         counts_by_day[day][category] += entry['count']
         if entry['locale'] == "MA":
