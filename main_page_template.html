@@ -70,6 +70,12 @@
             font-weight: 500;
         }
 
+        @media (min-width: 1400px) {
+            .no-padding-right-in-large-screens {
+                padding-right:0px !important;
+            }
+        }
+
         @media only screen and (max-width: 1400px) {
             .expands-in-small-screens {
                 flex: 0 0 100% !important;
@@ -140,7 +146,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-3 expands-in-small-screens">
+                    <div class="col-lg-3 expands-in-small-screens no-padding-right-in-large-screens">
                         <div class="card card-body mt-2" style="background-color: #FFFFFF">
                             <h6 class="card-title">
                                 <span style="color:#439798">Total</span> Tests Completed
