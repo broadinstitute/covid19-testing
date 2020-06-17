@@ -69,7 +69,7 @@ def compute_template_args():
     entries_by_day.sort(key=lambda x: x['day'])
 
     total_positive_percent = int(round((100.0 * total_positive) / total_completed))
-    total_inconclusive_percent = "%0.1f" % round((100.0 * total_inconclusive) / total_completed)
+    total_inconclusive_percent = "%0.1f" % round((100.0 * total_inconclusive) / total_completed, 1)
     total_from_MA_percent = int(round((100.0 * total_from_MA) / total_completed))
     total_from_out_of_state_percent = int(round((100.0 * total_from_out_of_state) / total_completed))
     result = {
