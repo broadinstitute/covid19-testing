@@ -307,6 +307,7 @@
           },
         },
         tooltip: {
+          xDateFormat: '%a, %b %d, %Y',
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px"><b>{point.y:,.0f}</b></td></tr>',
           footerFormat: '</table>',
@@ -395,6 +396,7 @@
           },
         },
         tooltip: {
+          xDateFormat: '%a, %b %d, %Y',
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td></tr>',
           footerFormat: '</table>',
@@ -513,9 +515,14 @@
           endOnTick: true
         },
         tooltip: {
-          formatter: function() {
-            return "<b>"+parseFloat(this.y).toPrecision(2) + "%</b> positive"
-          }
+          xDateFormat: '%a, %b %d, %Y',
+          valueDecimals: 2,
+          valueSuffix: '%',
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
         },
         series: [
           {
