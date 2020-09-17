@@ -339,7 +339,6 @@
           tickInterval: 7 * 24 * 3600 * 1000,
           labels: {
             formatter() {
-              console.log(this.value)
               return Highcharts.dateFormat('%e-%b', this.value)
             }
           }
@@ -428,7 +427,13 @@
           type: 'datetime',
           crosshair: true,
           startOnTick: true,
-          endOnTick: true
+          endOnTick: true,
+          tickInterval: 7 * 24 * 3600 * 1000,
+          labels: {
+            formatter() {
+              return Highcharts.dateFormat('%e-%b', this.value)
+            }
+          }
         },
         series: [
           {
@@ -512,7 +517,13 @@
           type: 'datetime',
           crosshair: true,
           startOnTick: true,
-          endOnTick: true
+          endOnTick: true,
+          tickInterval: 7 * 24 * 3600 * 1000,
+          labels: {
+            formatter() {
+              return Highcharts.dateFormat('%e-%b', this.value)
+            }
+          }
         },
         tooltip: {
           xDateFormat: '%a, %b %d, %Y',
