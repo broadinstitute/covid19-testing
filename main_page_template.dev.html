@@ -141,7 +141,7 @@
                                 <span style="color:#439798">Total</span> Tests Completed
                             </h6>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_COMPLETED}}</h3>
+                                <h3 class="card-main-info" style="color:#439798">{{TOTAL_COMPLETED}}</h3>
                                 <span class="card-secondary-info"> since 3/25/2020</span>
                             </div>
                         </div>
@@ -150,8 +150,8 @@
                                 <span style="color:#e18b50">Positive </span>Tests
                             </h6>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_POSITIVE}}</h3>
-                                <span class="card-secondary-info">{{TOTAL_POSITIVE_PERCENT}}% of tests</span>
+                                <h3 class="card-main-info" style="color:#e18b50">{{TOTAL_POSITIVE}}</h3>
+                                <div><span class="card-main-info">{{TOTAL_POSITIVE_PERCENT}}%</span> of tests</div>
                             </div>
                         </div>
                         <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
@@ -166,15 +166,14 @@
                         </div -->
                         <div class="card card-body mt-2" style="background-color: #FFFFFF">
                             <h7 class="card-title">
-                                <span style="color: gray;">Inconclusive </span>Tests +
-                                <span style="color: gray">Invalid </span>Tests
-                                <a target="_blank" href="https://covid-19-test-info.broadinstitute.org/#unsatisfactory-tnp-test-not-performed-result-code-information" style="padding-left: 10px; text-decoration: none; color: #AAAAAA">
+                              <span style="color: gray;">Inconclusive &amp; Invalid </span>Tests
+                              <a target="_blank" href="https://covid-19-test-info.broadinstitute.org/#unsatisfactory-tnp-test-not-performed-result-code-information" style="padding-left: 1px; text-decoration: none; color: #AAAAAA">
                                     <i class="fa fa-question-circle-o" target="_blank"></i>
                                 </a>
                             </h7>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_INCONCLUSIVE}}</h3>
-                                <span class="card-secondary-info">{{TOTAL_INCONCLUSIVE_PERCENT}}% of tests</span>
+                              <h3 class="card-main-info" style="color: gray;">{{TOTAL_INCONCLUSIVE}}</h3>
+                              <div><span class="card-main-info">{{TOTAL_INCONCLUSIVE_PERCENT}}%</span> of tests</div>
                             </div>
                         </div>
                         <div class="card card-body mt-2" style="background-color: #FFFFFF; display: none;">
