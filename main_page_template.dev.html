@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Broad COVID-19 Testing Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+    <meta name="description" content="Statistics on COVID-19 testing at the Broad Institute of MIT and Harvard in Cambridge, MA, USA.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/pattern-fill.js"></script>
+    <meta http-equiv="refresh" content="600">
+    <style type="text/css">
+        body, wrapper {
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: #FAFBFC;
+            border-bottom: 1px solid rgba(72, 94, 144, 0.16);
+        }
+
+        .card-title {
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #1b2e4b;
+            font-weight: 600;
+        }
+
+        .card-main-info {
+            color: rgb(33, 37, 41);
+            display: inline-block;
+            font-size: 28px;
+            font-weight: 500;
+            margin: 0px 8px 8px 0px;
+            text-align: left;
+            /* min-width: 85px; */
+        }
+
+        .card-main-info-samples-from {
+            color: rgb(33, 37, 41);
+            display: inline-block;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0px 5px 8px 0px;
+            text-align:left;
+            /* min-width:65px; */
+        }
+
+        .card-secondary-info {
+            color: rgb(33, 37, 41);
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 500;
+            text-align:left;
+        }
+
+        footer {
+            border-top: 1px solid rgba(72, 94, 144, 0.16);
+            background-color: #FAFBFC;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: bolder;
+            font-weight: 500;
+        }
+
+        @media (min-width: 1400px) {
+            .no-padding-right-in-large-screens {
+                padding-right:0px !important;
+            }
+            .col-xl-3-and-a-half {
+                width: 28%;
+                flex: 0 0 28%;
+                max-width: 28%;
+            }
+            .col-xl-8-and-a-half {
+                width: 72%;
+                flex: 0 0 72%;
+                max-width: 72%;
+            }
+        }
+
+        @media only screen and (max-width: 1400px) {
+            .expands-in-small-screens {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+            .hide-in-small-screen {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-161539452-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-161539452-1');
+    </script>
+</head>
+<body>
+    <wrapper class="d-flex flex-column">
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container">
+                <div class="row flex-fill">
+                    <div class="col-sm-3 text-center">
+                        <a class="navbar-brand" href="https://www.broadinstitute.org/" style="margin: 3px 10px 3px 0px">
+                            <img src="static/BroadInstLogoforDigitalRGB.png" width="170" height="43" />
+                        </a>
+                    </div>
+                    <div class="col-sm-12 col-lg-9 text-center" style="align-self: center; font-size: 27px; font-family: sans-serif; font-weight: 300">
+                        COVID-19 Diagnostic Processing Dashboard
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="content content-fixed flex-fill">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-0 col-sm-0"></div>
+                    <div class="col-sm-12 col-lg-12 mt-4 mb-5 expands-in-small-screens">
+                        In late March 2020, Broad Institute <a href="https://www.broadinstitute.org/news/how-broad-institute-converted-clinical-processing-lab-large-scale-covid-19-testing-facility">rapidly converted our large-scale genomics facility</a> into a center that can process SARS-CoV-2 tests. Working in partnership with the Commonwealth of Massachusetts, Massachusetts State Public Health Laboratory, and medical facilities in the Commonwealth, the Broad's CLIA-certified lab processes samples collected from patients in Massachusetts and beyond.<br />
+                        <br />
+                        This page shows the number of SARS-CoV-2 viral diagnostic tests processed at the Clinical Research Sequencing Platform (CRSP) at the Broad Institute of MIT and Harvard.<br />
+                        <br />
+                        These numbers are updated during the course of the day as samples are completed at Broad. For details on the testing program, visit the <a href="https://www.broadinstitute.org/covid-19-testing">Broad Institute website</a>.<br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-xl-3-and-a-half expands-in-small-screens no-padding-right-in-large-screens">
+                        <div class="card card-body mt-2" style="background-color: #FFFFFF">
+                            <h6 class="card-title">
+                                <span style="color:#439798">Total</span> Tests Completed
+                            </h6>
+                            <div style="white-space: nowrap">
+                                <h3 class="card-main-info">{{TOTAL_COMPLETED}}</h3>
+                                <span class="card-secondary-info"> since 3/25/2020</span>
+                            </div>
+                        </div>
+                        <div class="card card-body mt-2" style="background-color: #FFFFFF">
+                            <h6 class="card-title">
+                                <span style="color:#e18b50">Positive </span>Tests
+                            </h6>
+                            <div style="white-space: nowrap">
+                                <h3 class="card-main-info">{{TOTAL_POSITIVE}}</h3>
+                                <span class="card-secondary-info">{{TOTAL_POSITIVE_PERCENT}}% of tests</span>
+                            </div>
+                        </div>
+                        <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
+                            <h6 class="card-title">
+                                <span style="color:black">Tested </span>
+                                <span style="color:#00AA00">Negative </span>
+                            </h6>
+                            <div style="white-space: nowrap">
+                                <h3 class="card-main-info"></h3>
+                                <span class="card-secondary-info"></span>
+                            </div>
+                        </div -->
+                        <div class="card card-body mt-2" style="background-color: #FFFFFF">
+                            <h7 class="card-title">
+                                <span style="color: gray;">Inconclusive </span>Tests +
+                                <span style="color: gray">Invalid </span>Tests
+                                <a target="_blank" href="https://covid-19-test-info.broadinstitute.org/#unsatisfactory-tnp-test-not-performed-result-code-information" style="padding-left: 10px; text-decoration: none; color: #AAAAAA">
+                                    <i class="fa fa-question-circle-o" target="_blank"></i>
+                                </a>
+                            </h7>
+                            <div style="white-space: nowrap">
+                                <h3 class="card-main-info">{{TOTAL_INCONCLUSIVE}}</h3>
+                                <span class="card-secondary-info">{{TOTAL_INCONCLUSIVE_PERCENT}}% of tests</span>
+                            </div>
+                        </div>
+                        <div class="card card-body mt-2" style="background-color: #FFFFFF; display: none;">
+                            <h7 class="card-title">
+                                Tests by Region
+                            </h7>
+                            <div style="white-space: nowrap">
+                                <h3 class="card-main-info-samples-from">{{TOTAL_FROM_MA}}</h3>
+                                <span class="card-secondary-info" style="color:gray"> from MA </span>
+                                <span class="card-secondary-info">({{TOTAL_FROM_MA_PERCENT}}%)</span>
+                                <br />
+                                <h3 class="card-main-info-samples-from">{{TOTAL_FROM_OUT_OF_STATE}}</h3>
+                                <span class="card-secondary-info" style="color:gray"> from out of state </span>
+                                <span class="card-secondary-info">({{TOTAL_FROM_OUT_OF_STATE_PERCENT}}%)</span>
+                            </div>
+                        </div>
+                    </div><!-- col -->
+                    <div class="col-lg-12 col-xl-8-and-a-half mt-2">
+                        <div>
+                            <figure class="highcharts-figure">
+                                <div id="chart-1"></div>
+                            </figure>
+                            <figure class="highcharts-figure">
+                                <div id="chart-2"></div>
+                            </figure>
+                            <figure class="highcharts-figure">
+                                <div id="chart-3"></div>
+                            </figure>
+                        </div>
+                        <div class="text-secondary mt-5" style="margin:50px 10px">
+                            The numbers will not match the daily reports from the State of Massachusetts for several reasons:
+                            <ul>
+                                <li>Results are reported to the organization that sent the sample to us for testing. The sending institution must then report the results to the Massachusetts Department of Public Health, together with individual demographic data it has collected.</li>
+                                <li>Some people are tested more than once (for example, as a confirmation or re-test, or as part of an ongoing college/university testing program). The figures here reflect the number of tests performed, not the number of people tested.</li>
+                                <li>Broad Institute processes some tests from other states.</li>
+                            </ul>
+                            The "percent positive" pertains to the tests submitted to Broad. Because different organizations use different criteria for selecting individuals for testing, it is not possible to draw meaningful conclusions about infection rates or trends from these data. <br />
+                            <br />
+                            The Clinical Research Sequencing Platform, LLC is a subsidiary of the Broad Institute.<br />
+
+                        </div>
+                    </div>
+                </div><!-- row -->
+            </div><!-- container -->
+        </div>
+
+        <footer>
+            <div class="container text-right" style="padding:10px">
+                <span style="font-size: 15px; padding-right: 20px">
+                    <a href="mailto:genomics@broadinstitute.org" style="text-decoration:none; font-weight:500">
+                        <span style="padding-left: 10px">Contact Us</span>
+                        <i class="fa fa-envelope" aria-hidden="true" style="padding-left: 35px"></i>
+                    </a>
+                    <a target="_blank" href="https://twitter.com/broadinstitute" style="text-decoration: none; margin-left: 7px">
+                        <i class="fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a target="_blank" href="https://github.com/broadinstitute/covid19-testing/issues" style="text-decoration: none; margin-left: 7px">
+                        <i class="fa fa-github" aria-hidden="true"></i>
+                    </a>
+                </span>
+            </div>
+        </footer>
+
+    </wrapper>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script>
+      //docs @ https://api.highcharts.com/highcharts/
+
+      let data = {{DATA|tojson}};
+
+      const cumulativeTotals = []
+      data.reduce(function(a, x, i) { cumulativeTotals[i] = a + x.positive + x.negative + x.inconclusive; return cumulativeTotals[i] }, 0)
+      const cumulativePositives = []
+      data.reduce(function(a, x, i) { cumulativePositives[i] = a + x.positive; return cumulativePositives[i] }, 0)
+
+      Highcharts.setOptions({
+        lang: {
+          thousandsSep: ','
+        }
+      })
+
+      Highcharts.chart('chart-1', {
+        chart: {
+          type: 'spline',
+          height: '350px',
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+          floating: true,
+          align: 'left',
+          verticalAlign: 'top',
+          layout: 'horizontal',
+          x: 60,
+          y: 50
+        },
+        title: {
+          text: 'Cumulative Volume'
+        },
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 700,
+            },
+            chartOptions: {
+                yAxis: {
+                  minorTicks: true,
+                }
+            }
+          }]
+        },
+        plotOptions: {
+          series: {
+            dataLabels: {
+              enabled: false,
+              y: -5,
+            },
+          },
+        },
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px"><b>{point.y:,.0f}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
+        yAxis: {
+          tickInterval: 5000,
+          minorTickInterval: 2500,
+          minorTicks: false,
+          min: 0,
+          title: {
+            enabled: false,
+          },
+        },
+        xAxis: {
+          categories: data.map(function(x) { return x.shortDate }),
+          crosshair: true
+        },
+        series: [
+          {
+            name: 'Cumulative Tests Completed',
+            data: cumulativeTotals,
+            color: "#439798", //"#00AA00AA",
+          }, {
+            name: 'Cumulative Positives',
+            data: cumulativePositives,
+            color: "#e18b50", //"#BB0000AA",
+          }]
+      });
+
+      Highcharts.chart('chart-2', {
+        chart: {
+          height: '350px',
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+          floating: true,
+          align: 'left',
+          verticalAlign: 'top',
+          layout: 'horizontal',
+          x: 60,
+          y: 45
+        },
+        title: {
+          text: 'Daily Volume'
+        },
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 700,
+            },
+            chartOptions: {
+                yAxis: {
+                    minorTicks: true,
+                }
+            }
+          }]
+        },
+        plotOptions: {
+          column: {
+            stacking: 'normal',
+            pointPadding: 0.2,
+            borderColor: '#439798',
+            borderWidth: 1,
+          },
+        },
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
+        yAxis: {
+          reversedStacks: false,
+          min: 0,
+          tickInterval: 500,
+          minorTickInterval: 250,
+          minorTicks: false,
+          title: {
+            enabled: false,
+          },
+          labels: {
+            format: '{value:,.0f}',
+          }
+        },
+        xAxis: {
+          categories: data.map(function(x) { return x.shortDate }),
+          crosshair: true
+        },
+        series: [
+          {
+            name: 'Tests Completed',
+            type: 'column',
+            data: data.map(function(x) { return x.positive + x.negative + x.inconclusive }),
+            color: "#439798", //"#00AA00AA",
+            dataLabels: {
+              enabled: false,
+            },
+          },
+        ]
+      }, function(chart) {
+        var series = chart.series;
+        $.each(series, function(i, ser) {
+          $(ser.legendSymbol.element).attr('stroke-width','1');
+          $(ser.legendSymbol.element).attr('stroke','#439798');
+        });
+      });
+
+
+
+      Highcharts.chart('chart-3', {
+        chart: {
+          height: '300px',
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+          enabled: false,
+        },
+        title: {
+          text: 'Daily Positive Rate'
+        },
+        plotOptions: {
+          column: {
+            borderWidth: 0,
+          },
+        },
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 700,
+            },
+            chartOptions: {
+              yAxis: {
+                tickInterval: 20,
+                minorTicks: true,
+              }
+            }
+          }]
+        },
+        yAxis: [
+          {
+            min: 0,
+            max: 100,
+            tickInterval: 25,
+            minorTickInterval: 10,
+            minorTicks: false,
+            title: {
+              enabled: false,
+            },
+            labels: {
+              format: "{value} %",
+            }
+          }
+        ],
+        xAxis: {
+          categories: data.map(function(x) { return x.shortDate }),
+          crosshair: true
+        },
+        tooltip: {
+          formatter: function() {
+            return "<b>"+parseFloat(this.y).toPrecision(2) + "%</b> positive"
+          }
+        },
+        series: [
+          {
+            name: '% Positive',
+            type: 'line',
+            data: data.map(function(x) { return 100 * x.positive/(x.positive + x.negative + x.inconclusive) }),
+            color: "#e18b50", //"#BB0000AA",
+            dataLabels: {
+              enabled: false,
+              y: -10,
+            }
+          }
+        ]
+      });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
