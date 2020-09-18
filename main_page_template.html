@@ -141,7 +141,7 @@
                                 <span style="color:#439798">Total</span> Tests Completed
                             </h6>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_COMPLETED}}</h3>
+                                <h3 class="card-main-info" style="color:#439798">{{TOTAL_COMPLETED}}</h3>
                                 <span class="card-secondary-info"> since 3/25/2020</span>
                             </div>
                         </div>
@@ -150,8 +150,8 @@
                                 <span style="color:#e18b50">Positive </span>Tests
                             </h6>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_POSITIVE}}</h3>
-                                <span class="card-secondary-info">{{TOTAL_POSITIVE_PERCENT}}% of tests</span>
+                                <h3 class="card-main-info" style="color:#e18b50">{{TOTAL_POSITIVE}}</h3>
+                                <div><span class="card-main-info">{{TOTAL_POSITIVE_PERCENT}}%</span> of tests</div>
                             </div>
                         </div>
                         <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
@@ -166,15 +166,14 @@
                         </div -->
                         <div class="card card-body mt-2" style="background-color: #FFFFFF">
                             <h7 class="card-title">
-                                <span style="color: gray;">Inconclusive </span>Tests +
-                                <span style="color: gray">Invalid </span>Tests
-                                <a target="_blank" href="https://covid-19-test-info.broadinstitute.org/#unsatisfactory-tnp-test-not-performed-result-code-information" style="padding-left: 10px; text-decoration: none; color: #AAAAAA">
+                              <span style="color: gray;">Inconclusive &amp; Invalid </span>Tests
+                              <a target="_blank" href="https://covid-19-test-info.broadinstitute.org/#unsatisfactory-tnp-test-not-performed-result-code-information" style="padding-left: 1px; text-decoration: none; color: #AAAAAA">
                                     <i class="fa fa-question-circle-o" target="_blank"></i>
                                 </a>
                             </h7>
                             <div style="white-space: nowrap">
-                                <h3 class="card-main-info">{{TOTAL_INCONCLUSIVE}}</h3>
-                                <span class="card-secondary-info">{{TOTAL_INCONCLUSIVE_PERCENT}}% of tests</span>
+                              <h3 class="card-main-info" style="color: gray;">{{TOTAL_INCONCLUSIVE}}</h3>
+                              <div><span class="card-main-info">{{TOTAL_INCONCLUSIVE_PERCENT}}%</span> of tests</div>
                             </div>
                         </div>
                         <div class="card card-body mt-2" style="background-color: #FFFFFF; display: none;">
@@ -246,13 +245,38 @@
       let data = {{DATA|tojson}};
 
       const cumulativeTotals = []
-      data.reduce(function(a, x, i) { cumulativeTotals[i] = a + x.positive + x.negative + x.inconclusive; return cumulativeTotals[i] }, 0)
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive + x.negative + x.inconclusive;
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
+        cumulativeTotals[i] = [time, v];
+        return v;
+      }, 0);
       const cumulativePositives = []
-      data.reduce(function(a, x, i) { cumulativePositives[i] = a + x.positive; return cumulativePositives[i] }, 0)
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive;
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
+        cumulativePositives[i] = [time, v];
+        return v 
+      }, 0)
 
       Highcharts.setOptions({
         lang: {
           thousandsSep: ','
+        },
+        xAxis: {
+          type: 'datetime',
+          crosshair: true,
+          startOnTick: true,
+          tickInterval: 7 * 24 * 3600 * 1000,
+          labels: {
+            rotation: 60,
+            formatter() {
+              return Highcharts.dateFormat('%b-%e', this.value)
+            }
+          }
+        },
+        chart: {
+          marginRight: 20
         }
       })
 
@@ -270,7 +294,8 @@
           verticalAlign: 'top',
           layout: 'horizontal',
           x: 60,
-          y: 50
+          y: 70,
+          backgroundColor: '#ffffff'
         },
         title: {
           text: 'Cumulative Volume'
@@ -303,7 +328,7 @@
           useHTML: true
         },
         yAxis: {
-          tickInterval: 5000,
+          tickInterval: 200000,
           minorTickInterval: 2500,
           minorTicks: false,
           min: 0,
@@ -311,10 +336,7 @@
             enabled: false,
           },
         },
-        xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
-        },
+       
         series: [
           {
             name: 'Cumulative Tests Completed',
@@ -340,7 +362,8 @@
           verticalAlign: 'top',
           layout: 'horizontal',
           x: 60,
-          y: 45
+          y: 70,
+          backgroundColor: '#ffffff'
         },
         title: {
           text: 'Daily Volume'
@@ -375,25 +398,22 @@
         yAxis: {
           reversedStacks: false,
           min: 0,
-          tickInterval: 500,
+          tickInterval: 10000,
           minorTickInterval: 250,
           minorTicks: false,
           title: {
             enabled: false,
-          },
-          labels: {
-            format: '{value:,.0f}',
           }
         },
-        xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
-        },
+       
         series: [
           {
             name: 'Tests Completed',
             type: 'column',
-            data: data.map(function(x) { return x.positive + x.negative + x.inconclusive }),
+            data: data.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, x.positive + x.negative + x.inconclusive];
+            }),
             color: "#439798", //"#00AA00AA",
             dataLabels: {
               enabled: false,
@@ -407,8 +427,6 @@
           $(ser.legendSymbol.element).attr('stroke','#439798');
         });
       });
-
-
 
       Highcharts.chart('chart-3', {
         chart: {
@@ -435,7 +453,7 @@
             },
             chartOptions: {
               yAxis: {
-                tickInterval: 20,
+                tickInterval: 10,
                 minorTicks: true,
               }
             }
@@ -443,10 +461,11 @@
         },
         yAxis: [
           {
+            endOnTick: false,
             min: 0,
-            max: 100,
-            tickInterval: 25,
-            minorTickInterval: 10,
+            max: 50,
+            tickInterval: 10,
+            minorTickInterval: 5,
             minorTicks: false,
             title: {
               enabled: false,
@@ -456,20 +475,23 @@
             }
           }
         ],
-        xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
-        },
-        tooltip: {
-          formatter: function() {
-            return "<b>"+parseFloat(this.y).toPrecision(2) + "%</b> positive"
-          }
-        },
+        tooltip: {        
+          valueDecimals: 2,
+          valueSuffix: '%',
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },	   
         series: [
           {
             name: '% Positive',
             type: 'line',
-            data: data.map(function(x) { return 100 * x.positive/(x.positive + x.negative + x.inconclusive) }),
+            data: data.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
+            }),            
             color: "#e18b50", //"#BB0000AA",
             dataLabels: {
               enabled: false,
