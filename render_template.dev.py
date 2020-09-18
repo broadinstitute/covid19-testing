@@ -9,7 +9,7 @@ from flask import Flask, render_template, jsonify
 app = Flask(__name__, template_folder=".")
 
 DATA_JSON_PATH = "data.json"
-TEMPLATE_PATH = "main_page_template.html"
+TEMPLATE_PATH = "main_page_template.dev.html"
 
 CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
