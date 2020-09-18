@@ -247,14 +247,15 @@
       const cumulativeTotals = []
       data.reduce(function(a, x, i) { 
         let v = a + x.positive + x.negative + x.inconclusive;
-        let time = new Date(x.day + ' GMT-0400').getTime();
+        console.log(x.day)
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
         cumulativeTotals[i] = [time, v];
         return v;
       }, 0);
       const cumulativePositives = []
       data.reduce(function(a, x, i) { 
         let v = a + x.positive;
-        let time = new Date(x.day + ' GMT-0400').getTime();
+        let time = new Date(x.day.replace(/-/g, ",")).getTime();
         cumulativePositives[i] = [time, v];
         return v 
       }, 0)
@@ -325,12 +326,14 @@
           // categories: data.map(function(x) { return x.shortDate }),
           type: 'datetime',
           crosshair: true,
-          tickInterval: 7 * 24 * 3600 * 1000, // in msec
+          // tickInterval: 7 * 24 * 3600 * 1000, // in msec
           labels: {
             formatter() {
-              return Highcharts.dateFormat('%e-%b', this.value)
-            }
-          }
+              return Highcharts.dateFormat('%b %e', this.value)
+            },
+            rotation: 60
+          },
+        
         },
         series: [
           {
