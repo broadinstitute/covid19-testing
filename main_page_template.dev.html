@@ -245,9 +245,19 @@
       let data = {{DATA|tojson}};
 
       const cumulativeTotals = []
-      data.reduce(function(a, x, i) { cumulativeTotals[i] = a + x.positive + x.negative + x.inconclusive; return cumulativeTotals[i] }, 0)
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive + x.negative + x.inconclusive;
+        let time = new Date(x.day + ' GMT-0400').getTime();
+        cumulativeTotals[i] = [time, v];
+        return v;
+      }, 0);
       const cumulativePositives = []
-      data.reduce(function(a, x, i) { cumulativePositives[i] = a + x.positive; return cumulativePositives[i] }, 0)
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive;
+        let time = new Date(x.day + ' GMT-0400').getTime();
+        cumulativePositives[i] = [time, v];
+        return v 
+      }, 0)
 
       Highcharts.setOptions({
         lang: {
@@ -312,8 +322,15 @@
           },
         },
         xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
+          // categories: data.map(function(x) { return x.shortDate }),
+          type: 'datetime',
+          crosshair: true,
+          tickInterval: 7 * 24 * 3600 * 1000, // in msec
+          labels: {
+            formatter() {
+              return Highcharts.dateFormat('%e-%b', this.value)
+            }
+          }
         },
         series: [
           {
@@ -436,7 +453,7 @@
             },
             chartOptions: {
               yAxis: {
-                tickInterval: 20,
+                tickInterval: 10,
                 minorTicks: true,
               }
             }
@@ -444,6 +461,7 @@
         },
         yAxis: [
           {
+            endOnTick: false,
             min: 0,
             max: 50,
             tickInterval: 10,
