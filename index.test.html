@@ -247,7 +247,6 @@
       const cumulativeTotals = []
       data.reduce(function(a, x, i) { 
         let v = a + x.positive + x.negative + x.inconclusive;
-        console.log(x.day)
         let time = new Date(x.day.replace(/-/g, "/")).getTime();
         cumulativeTotals[i] = [time, v];
         return v;
@@ -255,7 +254,7 @@
       const cumulativePositives = []
       data.reduce(function(a, x, i) { 
         let v = a + x.positive;
-        let time = new Date(x.day.replace(/-/g, ",")).getTime();
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
         cumulativePositives[i] = [time, v];
         return v 
       }, 0)
@@ -263,6 +262,21 @@
       Highcharts.setOptions({
         lang: {
           thousandsSep: ','
+        },
+        xAxis: {
+          type: 'datetime',
+          crosshair: true,
+          startOnTick: true,
+          tickInterval: 7 * 24 * 3600 * 1000,
+          labels: {
+            rotation: 60,
+            formatter() {
+              return Highcharts.dateFormat('%b-%e', this.value)
+            }
+          }
+        },
+        chart: {
+          marginRight: 20
         }
       })
 
@@ -322,19 +336,7 @@
             enabled: false,
           },
         },
-        xAxis: {
-          // categories: data.map(function(x) { return x.shortDate }),
-          type: 'datetime',
-          crosshair: true,
-          // tickInterval: 7 * 24 * 3600 * 1000, // in msec
-          labels: {
-            formatter() {
-              return Highcharts.dateFormat('%b %e', this.value)
-            },
-            rotation: 60
-          },
-        
-        },
+       
         series: [
           {
             name: 'Cumulative Tests Completed',
@@ -401,20 +403,17 @@
           minorTicks: false,
           title: {
             enabled: false,
-          },
-          // labels: {
-          //   format: '{value:,.0f}',
-          // }
+          }
         },
-        xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
-        },
+       
         series: [
           {
             name: 'Tests Completed',
             type: 'column',
-            data: data.map(function(x) { return x.positive + x.negative + x.inconclusive }),
+            data: data.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, x.positive + x.negative + x.inconclusive];
+            }),
             color: "#439798", //"#00AA00AA",
             dataLabels: {
               enabled: false,
@@ -428,8 +427,6 @@
           $(ser.legendSymbol.element).attr('stroke','#439798');
         });
       });
-
-
 
       Highcharts.chart('chart-3', {
         chart: {
@@ -478,20 +475,23 @@
             }
           }
         ],
-        xAxis: {
-          categories: data.map(function(x) { return x.shortDate }),
-          crosshair: true
-        },
-        tooltip: {
-          formatter: function() {
-            return "<b>"+parseFloat(this.y).toPrecision(2) + "%</b> positive"
-          }
-        },
+        tooltip: {        
+          valueDecimals: 2,
+          valueSuffix: '%',
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },	   
         series: [
           {
             name: '% Positive',
             type: 'line',
-            data: data.map(function(x) { return 100 * x.positive/(x.positive + x.negative + x.inconclusive) }),
+            data: data.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
+            }),            
             color: "#e18b50", //"#BB0000AA",
             dataLabels: {
               enabled: false,
