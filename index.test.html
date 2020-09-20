@@ -498,17 +498,17 @@
               return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
             }),            
             color: "#e18b50", //"#BB0000AA",
-           
+            lineWidth: 1
           },
           {
-            name: '% Weekly Rolling Positive',
+            name: '% 7-day Ave Rolling Positive',
             type: 'line',
             data: rollingAve.map(function(x) { 
               const time = new Date(x.day.replace(/,/g, '/')).getTime();
               return [time, 100 * x.positive/x.total] 
             }),            
-            color: "#BB0000AA",
-           
+            color: "#aaaaaa",
+            lineWidth: 2
           }
         ]
       });
