@@ -249,8 +249,11 @@
     plotDailyVolume();
     plotDailyPositiveRate();
     
-    function setChartGlobalConfig(){
+    function setChartGlobalConfig() {
       Highcharts.setOptions({
+        credits: {
+          enabled: false
+        },
         lang: {
           thousandsSep: ','
         },
@@ -268,10 +271,22 @@
         },
         chart: {
           marginRight: 20
+        },
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 700,
+            },
+            chartOptions: {
+              yAxis: {
+                minorTicks: true,
+              }
+            }
+          }]
         }
       })
     }
-    function plotCumulativeTests(){
+    function plotCumulativeTests() {
       const cumulativeTotals = []
       data.reduce(function(a, x, i) { 
         let v = a + x.positive + x.negative + x.inconclusive;
@@ -291,32 +306,17 @@
           type: 'spline',
           height: '350px',
         },
-        credits: {
-          enabled: false
-        },
         legend: {
           floating: true,
           align: 'left',
           verticalAlign: 'top',
-          layout: 'horizontal',
+          layout: 'vertical',
           x: 60,
           y: 70,
           backgroundColor: '#ffffff'
         },
         title: {
           text: 'Cumulative Volume'
-        },
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 700,
-            },
-            chartOptions: {
-                yAxis: {
-                  minorTicks: true,
-                }
-            }
-          }]
         },
         plotOptions: {
           series: {
@@ -355,37 +355,22 @@
           }]
       });
     }
-    function plotDailyVolume(){
+    function plotDailyVolume() {
       Highcharts.chart('chart-2', {
         chart: {
           height: '350px',
-        },
-        credits: {
-          enabled: false
         },
         legend: {
           floating: true,
           align: 'left',
           verticalAlign: 'top',
-          layout: 'horizontal',
+          layout: 'vertical',
           x: 60,
           y: 70,
           backgroundColor: '#ffffff'
         },
         title: {
           text: 'Daily Volume'
-        },
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 700,
-            },
-            chartOptions: {
-                yAxis: {
-                    minorTicks: true,
-                }
-            }
-          }]
         },
         plotOptions: {
           column: {
@@ -435,16 +420,40 @@
         });
       });
     }
-    function plotDailyPositiveRate(){
+    function plotDailyPositiveRate() {
+      const dataReverse = [...data].reverse();
+      let rollingAve = []; // assumption: the array, data, is sorted by date and without missing days
+      dataReverse.forEach( function(x, i) {
+        let j = i + 7;
+        if (j<dataReverse.length){
+          let week = dataReverse.slice(i, j);
+          let totalPositive = week.reduce(function(a, d){
+            a = a + d.positive;
+            return a;
+          }, 0);
+          let totalTest = week.reduce(function(a, d){
+            a = a + d.inconclusive+d.negative+d.positive;
+            return a;
+          }, 0);
+          rollingAve.unshift({
+            day: x.day,
+            positive: totalPositive,
+            total: totalTest
+          })
+        }
+      });
       Highcharts.chart('chart-3', {
         chart: {
           height: '300px',
         },
-        credits: {
-          enabled: false
-        },
         legend: {
-          enabled: false,
+          floating: true,
+          align: 'right',
+          verticalAlign: 'top',
+          layout: 'vertical',
+          x: 0,
+          y: 70,
+          backgroundColor: '#ffffff'
         },
         title: {
           text: 'Daily Positive Rate'
@@ -454,19 +463,7 @@
             borderWidth: 0,
           },
         },
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 700,
-            },
-            chartOptions: {
-              yAxis: {
-                tickInterval: 10,
-                minorTicks: true,
-              }
-            }
-          }]
-        },
+        
         yAxis: [
           {
             endOnTick: false,
@@ -501,10 +498,17 @@
               return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
             }),            
             color: "#e18b50", //"#BB0000AA",
-            dataLabels: {
-              enabled: false,
-              y: -10,
-            }
+           
+          },
+          {
+            name: '% 7-day Ave Rolling Positive',
+            type: 'line',
+            data: rollingAve.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, 100 * x.positive/x.total] 
+            }),            
+            color: "#BB0000AA",
+           
           }
         ]
       });
