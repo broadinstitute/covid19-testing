@@ -61,7 +61,7 @@
         .card-small-text {
             color: rgb(33, 37, 41);
             display: inline-block;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 500;
             text-align:left;
         }
@@ -160,7 +160,7 @@
                             <div style="white-space: nowrap">
                                 <h3 class="card-main-info" style="color:#e18b50">{{TOTAL_POSITIVE}}</h3>
                                 <div><span class="card-main-info">{{TOTAL_POSITIVE_PERCENT}}%</span> of tests</div>
-                                <div><span  id="rolling-ave" class="card-main-info"></span><span class="card-small-text"> most recent 7-day rolling average</span></div>
+                                <div><span  id="rolling-ave" class="card-main-info"></span><span class="card-small-text"> last 7-day rolling average</span></div>
 
                             </div>
                         </div>
@@ -511,7 +511,7 @@
         },	   
         series: [
           {
-            name: '% Positive (Rolling 7-day Average)',
+            name: '% Positive (7-day Rolling Average)',
             type: 'line',
             data: rollingAve.map(function(x) { 
               const time = new Date(x.day.replace(/,/g, '/')).getTime();
