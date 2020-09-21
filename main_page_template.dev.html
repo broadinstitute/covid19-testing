@@ -58,6 +58,14 @@
             text-align:left;
         }
 
+        .card-small-text {
+            color: rgb(33, 37, 41);
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            text-align:left;
+        }
+
         footer {
             border-top: 1px solid rgba(72, 94, 144, 0.16);
             background-color: #FAFBFC;
@@ -152,6 +160,8 @@
                             <div style="white-space: nowrap">
                                 <h3 class="card-main-info" style="color:#e18b50">{{TOTAL_POSITIVE}}</h3>
                                 <div><span class="card-main-info">{{TOTAL_POSITIVE_PERCENT}}%</span> of tests</div>
+                                <div><span  id="rolling-ave" class="card-main-info"></span><span class="card-small-text"> most recent 7-day rolling average</span></div>
+
                             </div>
                         </div>
                         <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
@@ -238,28 +248,25 @@
         </footer>
 
     </wrapper>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script>
-      //docs @ https://api.highcharts.com/highcharts/
+  </body>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-      let data = {{DATA|tojson}};
+  <script>
+    //docs @ https://api.highcharts.com/highcharts/
+    let data = {{DATA|tojson}};
 
-      const cumulativeTotals = []
-      data.reduce(function(a, x, i) { 
-        let v = a + x.positive + x.negative + x.inconclusive;
-        let time = new Date(x.day.replace(/-/g, "/")).getTime();
-        cumulativeTotals[i] = [time, v];
-        return v;
-      }, 0);
-      const cumulativePositives = []
-      data.reduce(function(a, x, i) { 
-        let v = a + x.positive;
-        let time = new Date(x.day.replace(/-/g, "/")).getTime();
-        cumulativePositives[i] = [time, v];
-        return v 
-      }, 0)
-
+    setChartGlobalConfig();
+    plotCumulativeTests();
+    plotDailyVolume();
+    plotDailyPositiveRate();
+    
+    function setChartGlobalConfig() {
       Highcharts.setOptions({
+        credits: {
+          enabled: false
+        },
         lang: {
           thousandsSep: ','
         },
@@ -277,28 +284,6 @@
         },
         chart: {
           marginRight: 20
-        }
-      })
-
-      Highcharts.chart('chart-1', {
-        chart: {
-          type: 'spline',
-          height: '350px',
-        },
-        credits: {
-          enabled: false
-        },
-        legend: {
-          floating: true,
-          align: 'left',
-          verticalAlign: 'top',
-          layout: 'horizontal',
-          x: 60,
-          y: 70,
-          backgroundColor: '#ffffff'
-        },
-        title: {
-          text: 'Cumulative Volume'
         },
         responsive: {
           rules: [{
@@ -306,11 +291,45 @@
               maxWidth: 700,
             },
             chartOptions: {
-                yAxis: {
-                  minorTicks: true,
-                }
+              yAxis: {
+                minorTicks: true,
+              }
             }
           }]
+        }
+      })
+    }
+    function plotCumulativeTests() {
+      const cumulativeTotals = []
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive + x.negative + x.inconclusive;
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
+        cumulativeTotals[i] = [time, v];
+        return v;
+      }, 0);
+      const cumulativePositives = []
+      data.reduce(function(a, x, i) { 
+        let v = a + x.positive;
+        let time = new Date(x.day.replace(/-/g, "/")).getTime();
+        cumulativePositives[i] = [time, v];
+        return v 
+      }, 0)
+      Highcharts.chart('chart-1', {
+        chart: {
+          type: 'spline',
+          height: '350px',
+        },
+        legend: {
+          floating: true,
+          align: 'left',
+          verticalAlign: 'top',
+          layout: 'vertical',
+          x: 60,
+          y: 70,
+          backgroundColor: '#ffffff'
+        },
+        title: {
+          text: 'Cumulative Volume'
         },
         plotOptions: {
           series: {
@@ -336,7 +355,7 @@
             enabled: false,
           },
         },
-       
+        
         series: [
           {
             name: 'Cumulative Tests Completed',
@@ -348,37 +367,23 @@
             color: "#e18b50", //"#BB0000AA",
           }]
       });
-
+    }
+    function plotDailyVolume() {
       Highcharts.chart('chart-2', {
         chart: {
           height: '350px',
-        },
-        credits: {
-          enabled: false
         },
         legend: {
           floating: true,
           align: 'left',
           verticalAlign: 'top',
-          layout: 'horizontal',
+          layout: 'vertical',
           x: 60,
           y: 70,
           backgroundColor: '#ffffff'
         },
         title: {
           text: 'Daily Volume'
-        },
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 700,
-            },
-            chartOptions: {
-                yAxis: {
-                    minorTicks: true,
-                }
-            }
-          }]
         },
         plotOptions: {
           column: {
@@ -405,7 +410,7 @@
             enabled: false,
           }
         },
-       
+        
         series: [
           {
             name: 'Tests Completed',
@@ -427,16 +432,48 @@
           $(ser.legendSymbol.element).attr('stroke','#439798');
         });
       });
+    }
+    function plotDailyPositiveRate() {
+      // calculate the 7-day rolling average
+      const dataReverse = [...data].reverse();
+      let rollingAve = []; // assumption: the array, data, is sorted by date and without missing days
+      dataReverse.forEach( function(x, i) {
+        let j = i + 7;
+        if (j<dataReverse.length){
+          let week = dataReverse.slice(i, j);
+          let totalPositive = week.reduce(function(a, d){
+            a = a + d.positive;
+            return a;
+          }, 0);
+          let totalTest = week.reduce(function(a, d){
+            a = a + d.inconclusive+d.negative+d.positive;
+            return a;
+          }, 0);
+          rollingAve.unshift({
+            day: x.day,
+            positive: totalPositive,
+            total: totalTest
+          })
+        }
+      });
+      
+      // report the most recent rolling ave in the left-side report card
+      const mostRecent = rollingAve[rollingAve.length-1]; 
+      $("#rolling-ave").text(`${100 * (mostRecent.positive/mostRecent.total).toPrecision(2)}%`);
 
+      // rendering
       Highcharts.chart('chart-3', {
         chart: {
           height: '300px',
         },
-        credits: {
-          enabled: false
-        },
         legend: {
-          enabled: false,
+          floating: true,
+          align: 'right',
+          verticalAlign: 'top',
+          layout: 'vertical',
+          x: 0,
+          y: 70,
+          backgroundColor: '#ffffff'
         },
         title: {
           text: 'Daily Positive Rate'
@@ -446,19 +483,7 @@
             borderWidth: 0,
           },
         },
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 700,
-            },
-            chartOptions: {
-              yAxis: {
-                tickInterval: 10,
-                minorTicks: true,
-              }
-            }
-          }]
-        },
+        
         yAxis: [
           {
             endOnTick: false,
@@ -486,23 +511,27 @@
         },	   
         series: [
           {
-            name: '% Positive',
+            name: '% Positive (Rolling 7-day Average)',
+            type: 'line',
+            data: rollingAve.map(function(x) { 
+              const time = new Date(x.day.replace(/,/g, '/')).getTime();
+              return [time, 100 * x.positive/x.total] 
+            }),            
+            color: "#aaaaaa",
+            lineWidth: 2
+          },
+          {
+            name: '% Positive (Daily)',
             type: 'line',
             data: data.map(function(x) { 
               const time = new Date(x.day.replace(/,/g, '/')).getTime();
               return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
             }),            
             color: "#e18b50", //"#BB0000AA",
-            dataLabels: {
-              enabled: false,
-              y: -10,
-            }
+            lineWidth: 1
           }
         ]
       });
-
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body>
-</html>
+    }
+  </script>
+ </html>
