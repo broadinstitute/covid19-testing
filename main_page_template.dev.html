@@ -58,6 +58,14 @@
             text-align:left;
         }
 
+        .card-small-text {
+            color: rgb(33, 37, 41);
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            text-align:left;
+        }
+
         footer {
             border-top: 1px solid rgba(72, 94, 144, 0.16);
             background-color: #FAFBFC;
@@ -152,6 +160,8 @@
                             <div style="white-space: nowrap">
                                 <h3 class="card-main-info" style="color:#e18b50">{{TOTAL_POSITIVE}}</h3>
                                 <div><span class="card-main-info">{{TOTAL_POSITIVE_PERCENT}}%</span> of tests</div>
+                                <div><span  id="rolling-ave" class="card-main-info"></span><span class="card-small-text"> most recent 7-day rolling average</span></div>
+
                             </div>
                         </div>
                         <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
@@ -240,6 +250,9 @@
     </wrapper>
   </body>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
   <script>
     //docs @ https://api.highcharts.com/highcharts/
     let data = {{DATA|tojson}};
@@ -421,6 +434,7 @@
       });
     }
     function plotDailyPositiveRate() {
+      // calculate the 7-day rolling average
       const dataReverse = [...data].reverse();
       let rollingAve = []; // assumption: the array, data, is sorted by date and without missing days
       dataReverse.forEach( function(x, i) {
@@ -442,6 +456,12 @@
           })
         }
       });
+      
+      // report the most recent rolling ave in the left-side report card
+      const mostRecent = rollingAve[rollingAve.length-1]; 
+      $("#rolling-ave").text(`${100 * (mostRecent.positive/mostRecent.total).toPrecision(2)}%`);
+
+      // rendering
       Highcharts.chart('chart-3', {
         chart: {
           height: '300px',
@@ -514,6 +534,4 @@
       });
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</html>
+ </html>
