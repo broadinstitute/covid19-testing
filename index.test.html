@@ -459,7 +459,7 @@
       
       // report the most recent rolling ave in the left-side report card
       const mostRecent = rollingAve[rollingAve.length-1]; 
-      $("#rolling-ave").text(`${100 * (mostRecent.positive/mostRecent.total).toPrecision(2)}%`);
+      $("#rolling-ave").text(`${(100 * (mostRecent.positive/mostRecent.total)).toFixed(2)}%`);
 
       // rendering
       Highcharts.chart('chart-3', {
