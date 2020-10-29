@@ -64,7 +64,7 @@
     let currentTime = new Date(today);
     // console.log(data); // dev purpose only
     $('#today').text(today);
-    let yesterday = data[data.length-1];
+    let yesterday = data[data.length-2];
     let yesterdayTotal = yesterday.negative + yesterday.positive + yesterday.inconclusive;
     $('#yesterday-total').text(yesterdayTotal.toLocaleString());
 </script>
