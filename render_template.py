@@ -10,6 +10,7 @@ app = Flask(__name__, template_folder=".")
 
 DATA_JSON_PATH = "data.json"
 TEMPLATE_PATH = "main_page_template.html"
+DAILY_TEMPLATE_PATH = "daily_page_template.html"
 
 CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
@@ -113,6 +114,8 @@ def main():
     with app.app_context():
         with open("index.html", "wt") as f:
             f.write(render_template(TEMPLATE_PATH, **template_args))
+        with open("daily/index.html", "wt") as f:
+            f.write(render_template(DAILY_TEMPLATE_PATH, **template_args))
 
 
 if __name__ == "__main__":

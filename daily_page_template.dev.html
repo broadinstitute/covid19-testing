@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Broad COVID-19 Test Processing Daily Report</title>
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+        <meta name="description" content="Daily report on COVID-19 testing at the Broad Institute of MIT and Harvard in Cambridge, MA, USA.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+        <meta http-equiv="refresh" content="600">
+        <style type="text/css">
+            body {
+                font-family: 'Lato', sans-serif;
+            }
+            h1 {
+                color: #006DB6;
+                font-size: 6rem;
+                font-weight: 700;
+            }
+
+            h3 {
+                font-size: 3rem;
+                font-weight: 300;
+            }
+
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body class="d-flex flex-column min-vh-100">
+        <header><div id="banner" style="background-color:#00AFD7; height:20px;"></div></header>
+        <content class="justify-content-center" style="margin: 5em;">  
+            <h3>Updated <span id="today">2020, ##, ##</span></h3>
+            <h1>COVID-19 Test Processing Daily Report</h1>
+            <div class="row" style="margin-top: 10rem;">
+                <div class="col-lg-6">
+                    <h3>TEST RUN YESTERDAY</h3>
+                    <div style="white-space: nowrap">
+                        <h1 id="yesterday-total">yesterday</h1>
+                    </div>
+                </div><!-- col -->
+                <div class="col-lg-6">
+                    <h3>TOTAL TESTS SINCE MARCH 25, 2020</h3>
+                    <div style="white-space: nowrap">
+                        <h1>{{TOTAL_COMPLETED}}</h1>
+                    </div>
+                </div><!-- col -->
+            </div><!-- row -->
+        </content>
+        <footer class="mt-auto text-lg-right"  style="background-color:#00afd7; padding: 1em;">
+                <img src="/static/BroadLogo_White.png" width="200" />
+        </footer>
+    </body>
+</html>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+<script>
+    let data = {{DATA|tojson}};
+    let today = new Date().toLocaleDateString();
+    let currentTime = new Date(today);
+    // console.log(data); // dev purpose only
+    $('#today').text(today);
+    let yesterday = data[data.length-1];
+    let yesterdayTotal = yesterday.negative + yesterday.positive + yesterday.inconclusive;
+    $('#yesterday-total').text(yesterdayTotal.toLocaleString());
+</script>
