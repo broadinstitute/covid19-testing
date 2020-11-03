@@ -27,19 +27,23 @@
                 font-size: 1.5rem;
                 font-weight: 400;
             }
-            @media (max-width: 640px) {
+            @media (min-height: 1944px) {
                 h1 {
                     color: #006DB6;
-                    font-size: 4rem;
+                    font-size: 12rem;
                     font-weight: 700;
                 }
                 h2 {
                     color: #006DB6;
-                    font-size: 2.5rem;
+                    font-size: 7.5rem;
                     font-weight: 700;
                 }
+                h3 {
+                    font-size: 3rem;
+                    font-weight: 400;
+                }
                 .spacer {
-                    height: 2rem;
+                    height: 10rem;
                 }
             }
 
@@ -49,17 +53,21 @@
     <body class="d-flex flex-column min-vh-100">
         <header><div id="banner" style="background-color:#00AFD7; height:15px;"></div></header>
         <content class="justify-content-center" style="margin: 3em;">  
+            <div class="spacer"></div>
+
             <h3>Updated <span id="today">2020, ##, ##</span></h3>
             <h2>COVID-19 Test Processing <br/> Daily Report</h2>
             <div class="row" style="margin: 5rem 0rem 0 0rem;">
-                <div class="col-lg-5 col-sm-12 col-md-12">
+                <div class="col-lg-5 col-xl-12">
+                    <div class="spacer"></div>
+
                     <h3>TESTS RUN YESTERDAY</h3>
                     <div style="white-space: nowrap">
                         <h1 id="yesterday-total">yesterday</h1>
                     </div>
                     <div class="spacer"></div>
                 </div><!-- col -->
-                <div class="col-lg-6 col-sm-12 col-md-12">
+                <div class="col-lg-6 col-xl-12">
                     <h3>TOTAL TESTS SINCE MARCH 25, 2020</h3>
                     <div style="white-space: nowrap">
                         <h1>{{TOTAL_COMPLETED}}</h1>
