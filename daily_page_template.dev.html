@@ -27,6 +27,21 @@
                 font-size: 1.5rem;
                 font-weight: 400;
             }
+            @media (max-width: 640px) {
+                h1 {
+                    color: #006DB6;
+                    font-size: 4rem;
+                    font-weight: 700;
+                }
+                h2 {
+                    color: #006DB6;
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                }
+                .spacer {
+                    height: 2rem;
+                }
+            }
 
         </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -37,13 +52,14 @@
             <h3>Updated <span id="today">2020, ##, ##</span></h3>
             <h2>COVID-19 Test Processing <br/> Daily Report</h2>
             <div class="row" style="margin: 5rem 0rem 0 0rem;">
-                <div class="col-lg-5">
+                <div class="col-lg-5 col-sm-12 col-md-12">
                     <h3>TESTS RUN YESTERDAY</h3>
                     <div style="white-space: nowrap">
                         <h1 id="yesterday-total">yesterday</h1>
                     </div>
+                    <div class="spacer"></div>
                 </div><!-- col -->
-                <div class="col-lg-6">
+                <div class="col-lg-6 col-sm-12 col-md-12">
                     <h3>TOTAL TESTS SINCE MARCH 25, 2020</h3>
                     <div style="white-space: nowrap">
                         <h1>{{TOTAL_COMPLETED}}</h1>
