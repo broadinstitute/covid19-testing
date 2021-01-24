@@ -469,10 +469,15 @@
       yAxis: {
         reversedStacks: false,
         min: 0,
-        tickAmount: 5,
+        tickInterval: 20000,
         title: {
           enabled: false,
-        }
+        },
+        plotLines:[{
+          color: '#AAAAAA',
+          width: 2,
+          value: 100000
+        }]
       },
       
       series: [
