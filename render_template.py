@@ -9,8 +9,8 @@ from flask import Flask, render_template, jsonify
 app = Flask(__name__, template_folder=".")
 
 DATA_JSON_PATH = "data.json"
-TEMPLATE_PATH = "main_page_template.dev.html"
-DAILY_TEMPLATE_PATH = "daily_page_template.dev.html"
+TEMPLATE_PATH = "main_page_template.html"
+DAILY_TEMPLATE_PATH = "daily_page_template.html"
 
 CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
@@ -130,9 +130,9 @@ def main():
     template_args = compute_template_args()
 
     with app.app_context():
-        with open("index.test.html", "wt") as f:
+        with open("index.html", "wt") as f:
             f.write(render_template(TEMPLATE_PATH, **template_args))
-        with open("daily/index.test.html", "wt") as f:
+        with open("daily/index.html", "wt") as f:
             f.write(render_template(DAILY_TEMPLATE_PATH, **template_args))
 
 
