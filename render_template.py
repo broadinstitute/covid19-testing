@@ -9,14 +9,14 @@ from flask import Flask, render_template, jsonify
 app = Flask(__name__, template_folder=".")
 
 DATA_JSON_PATH = "data.json"
-TEMPLATE_PATH = "main_page_template.html"
-DAILY_TEMPLATE_PATH = "daily_page_template.html"
+TEMPLATE_PATH = "main_page_template.dev.html"
+DAILY_TEMPLATE_PATH = "daily_page_template.dev.html"
 
 CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
     "NEG": "negative",
     "POS": "positive",
-    "INVALID": "inconclusive",
+    "INVALID": "inconclusive",  # is invalid meant to map to inconclusive?
 }
 
 def compute_template_args():
@@ -39,12 +39,26 @@ def compute_template_args():
         elif entry['locale'] == "Non-MA":
             counts_by_day[day]['samplesFromOutOfState'] += entry['count']
 
+        # note the pool count also only includes POSITIVES, NEGATIVES, INCONCLUSIVES, AND INVALIDS
+        if 'pooled_samples' in entry:
+            # counts total number of pooled samples
+            counts_by_day[day]['total_pooled_samples'] += entry['pooled_samples']
+
+        if 'pool_size' in entry:
+            # counts total number of individuals tested via pooling (swab count by tube)
+            counts_by_day[day]['total_pooled_individuals'] += entry['pool_size']
+
+    # print(f'\ntotal counts by day: {counts_by_day["2021-03-13"]}')
+
     entries_by_day = []
     total_completed = 0
     total_positive = 0
     total_inconclusive = 0
     total_from_MA = 0
     total_from_out_of_state = 0
+    total_pooled_samples = 0
+    total_pooled_individuals = 0
+
     for day, counters in counts_by_day.items():
         if day == '2020-03-23' or day == '2020-03-24': #  or day == datetime.datetime.now().strftime("%Y-%m-%d"):
             continue
@@ -56,6 +70,8 @@ def compute_template_args():
         total_inconclusive += counters['inconclusive']
         total_from_MA += counters['samplesFromMA']
         total_from_out_of_state += counters['samplesFromOutOfState']
+        total_pooled_samples += counters['total_pooled_samples']
+        total_pooled_individuals += counters['total_pooled_individuals']
 
         entries_by_day.append({
             'day': day,
@@ -84,6 +100,8 @@ def compute_template_args():
         'TOTAL_FROM_MA_PERCENT': total_from_MA_percent,
         'TOTAL_FROM_OUT_OF_STATE': f"{total_from_out_of_state:,}",
         'TOTAL_FROM_OUT_OF_STATE_PERCENT': total_from_out_of_state_percent,
+        'TOTAL_POOLED': total_pooled_samples,
+        'TOTAL_INDIVIDUALS_POOLED': total_pooled_individuals
     }
 
     #with open("daily_counts.json", "wt") as f:
@@ -112,9 +130,9 @@ def main():
     template_args = compute_template_args()
 
     with app.app_context():
-        with open("index.html", "wt") as f:
+        with open("index.test.html", "wt") as f:
             f.write(render_template(TEMPLATE_PATH, **template_args))
-        with open("daily/index.html", "wt") as f:
+        with open("daily/index.test.html", "wt") as f:
             f.write(render_template(DAILY_TEMPLATE_PATH, **template_args))
 
 
