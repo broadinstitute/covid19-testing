@@ -1,10 +1,9 @@
 import argparse
 import collections
-import datetime
 import json
 import pprint
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 
 app = Flask(__name__, template_folder=".")
 
@@ -16,7 +15,7 @@ CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
     "NEG": "negative",
     "POS": "positive",
-    "INVALID": "inconclusive",  # is invalid meant to map to inconclusive?
+    "INVALID": "inconclusive"
 }
 
 def compute_template_args():
@@ -48,8 +47,6 @@ def compute_template_args():
             # counts total number of individuals tested via pooling (swab count by tube)
             counts_by_day[day]['total_pooled_individuals'] += entry['pool_size']
 
-    # print(f'\ntotal counts by day: {counts_by_day["2021-03-13"]}')
-
     entries_by_day = []
     total_completed = 0
     total_positive = 0
@@ -79,6 +76,8 @@ def compute_template_args():
             'negative': counters['negative'],
             'inconclusive': counters['inconclusive'],
             'shortDate': shortDate,
+            'samplesPooled': counters['total_pooled_samples'],
+            'individualsPooled': counters['total_pooled_individuals']
             #'samplesFromMA': counters['samplesFromMA'],
             #'samplesFromOutOfState': counters['samplesFromOutOfState'],
         })
