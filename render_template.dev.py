@@ -47,8 +47,6 @@ def compute_template_args():
             # counts total number of individuals tested via pooling (swab count by tube)
             counts_by_day[day]['total_pooled_individuals'] += entry['pool_size']
 
-    # print(f'\ntotal counts by day: {counts_by_day["2021-03-13"]}')
-
     entries_by_day = []
     total_completed = 0
     total_positive = 0
