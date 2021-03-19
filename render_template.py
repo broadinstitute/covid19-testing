@@ -79,6 +79,8 @@ def compute_template_args():
             'negative': counters['negative'],
             'inconclusive': counters['inconclusive'],
             'shortDate': shortDate,
+            'samplesPooled': counters['total_pooled_samples'],
+            'individualsPooled': counters['total_pooled_individuals']
             #'samplesFromMA': counters['samplesFromMA'],
             #'samplesFromOutOfState': counters['samplesFromOutOfState'],
         })
