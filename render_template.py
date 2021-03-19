@@ -1,10 +1,9 @@
 import argparse
 import collections
-import datetime
 import json
 import pprint
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 
 app = Flask(__name__, template_folder=".")
 
@@ -16,7 +15,7 @@ CATEGORY_MAP = {
     "INCONCLUSIVE": "inconclusive",
     "NEG": "negative",
     "POS": "positive",
-    "INVALID": "inconclusive",  # is invalid meant to map to inconclusive?
+    "INVALID": "inconclusive"
 }
 
 def compute_template_args():
