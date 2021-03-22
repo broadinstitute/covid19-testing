@@ -206,9 +206,6 @@
                               <div id="chart-4"><!--pooled sample daily volume--></div>
                             </figure>
                             <figure class="highcharts-figure">
-                              <div id="chart-5"><!--pooled individuals daily volume --></div>
-                            </figure>
-                            <figure class="highcharts-figure">
                                 <div id="chart-3"></div>
                             </figure>
 
@@ -355,7 +352,6 @@
     plotDailyVolume(xAxis);
     plotDailyPositiveRate(xAxis);
     plotPooledDailyVolume(xAxis);
-    plotPooledIndividualVolume(xAxis);
   }
   function plotCumulativeTests(xAxis) {
     const cumulativeTotals = []
@@ -518,10 +514,10 @@
       },
       plotOptions: {
         column: {
-          stacking: 'normal',
-          pointPadding: 0.2,
           borderColor: '#439798',
-          borderWidth: 1,
+          borderWidth: 0,
+          grouping: false,
+          shadow: false
         }
       },
       tooltip: {
@@ -544,73 +540,18 @@
       
       series: [
         {
-          name: 'Tests Completed',
+          name: 'Pooled Samples',
           type: 'column',
           data: data.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
             return [time, x.samplesPooled];
           }),
-          color: "#439798", //"#00AA00AA",
+          color: "rgb(67, 122, 152, 0.5)", //"#00AA00AA",
           dataLabels: {
             enabled: false,
           },
+          pointPadding: 0,
         },
-      ]
-    }, function(chart) {
-      var series = chart.series;
-      $.each(series, function(i, ser) {
-        $(ser.legendSymbol.element).attr('stroke-width','1');
-        $(ser.legendSymbol.element).attr('stroke','#439798');
-      });
-    });
-  }
-  function plotPooledIndividualVolume(xAxis) {
-    Highcharts.chart('chart-5', {
-      global: {
-        useUTC: false
-      },
-      chart: {
-        height: '250px',
-      },
-      legend: {
-        floating: true,
-        align: 'left',
-        verticalAlign: 'top',
-        layout: 'vertical',
-        x: 60,
-        y: 30,
-        backgroundColor: '#ffffff'
-      },
-      title: {
-        text: 'Individuals in Daily Pooled Tests'
-      },
-      plotOptions: {
-        column: {
-          stacking: 'normal',
-          pointPadding: 0.2,
-          borderColor: '#439798',
-          borderWidth: 1,
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-      },
-      xAxis: xAxis,
-      yAxis: {
-        reversedStacks: false,
-        min: 0,
-        softMax: 10000,
-        tickInterval: 2000,
-        title: {
-          enabled: false,
-        }
-      },
-      
-      series: [
         {
           name: 'Individuals',
           type: 'column',
@@ -618,10 +559,13 @@
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
             return [time, x.individualsPooled];
           }),
-          color: "#439798", //"#00AA00AA",
+          color: "rgb(67, 122, 152)", //"#00AA00AA",
           dataLabels: {
             enabled: false,
           },
+          pointPadding: 0.4,
+          pointPlacement: 0.3
+
         },
       ]
     }, function(chart) {
@@ -632,6 +576,7 @@
       });
     });
   }
+  
   function plotDailyPositiveRate(xAxis) {
     // calculate the 7-day rolling average
     const dataReverse = [...data].reverse();
@@ -694,9 +639,6 @@
           min: 0,
           softMax: 5,
           tickAmount: 5,
-          // tickInterval: tickInterval,
-          // minorTickInterval: 5,
-          // minorTicks: false,
           title: {
             enabled: false,
           },
@@ -723,7 +665,7 @@
             return [time, 100 * x.positive/x.total] 
           }),            
           color: "#aaaaaa",
-          lineWidth: 2
+          lineWidth: 3
         },
         {
           name: '% Positive (Daily)',
@@ -733,7 +675,7 @@
             return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
           }),            
           color: "#e18b50", //"#BB0000AA",
-          lineWidth: 1
+          lineWidth: 2
         },
         {
           name: '% Positive (Daily pooled positives/samples)',
@@ -742,7 +684,7 @@
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
             return [time, 100 * (x.poolPositives/x.samplesPooled)] 
           }),            
-          color: "#cf9bbc",
+          color: "#9f64a1",
           lineWidth: 1
         }
       ]
