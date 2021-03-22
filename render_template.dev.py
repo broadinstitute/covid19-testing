@@ -42,6 +42,8 @@ def compute_template_args():
         if 'pooled_samples' in entry:
             # counts total number of pooled samples
             counts_by_day[day]['total_pooled_samples'] += entry['pooled_samples']
+            if category == 'positive':
+                counts_by_day[day]['total_pooled_positives'] += entry['pooled_samples']
 
         if 'pool_size' in entry:
             # counts total number of individuals tested via pooling (swab count by tube)
@@ -55,6 +57,7 @@ def compute_template_args():
     total_from_out_of_state = 0
     total_pooled_samples = 0
     total_pooled_individuals = 0
+    total_pooled_positives = 0
 
     for day, counters in counts_by_day.items():
         if day == '2020-03-23' or day == '2020-03-24': #  or day == datetime.datetime.now().strftime("%Y-%m-%d"):
@@ -69,6 +72,7 @@ def compute_template_args():
         total_from_out_of_state += counters['samplesFromOutOfState']
         total_pooled_samples += counters['total_pooled_samples']
         total_pooled_individuals += counters['total_pooled_individuals']
+        total_pooled_positives += counters['total_pooled_positives']
 
         entries_by_day.append({
             'day': day,
@@ -77,7 +81,8 @@ def compute_template_args():
             'inconclusive': counters['inconclusive'],
             'shortDate': shortDate,
             'samplesPooled': counters['total_pooled_samples'],
-            'individualsPooled': counters['total_pooled_individuals']
+            'individualsPooled': counters['total_pooled_individuals'],
+            'poolPositives': counters['total_pooled_positives']
             #'samplesFromMA': counters['samplesFromMA'],
             #'samplesFromOutOfState': counters['samplesFromOutOfState'],
         })
@@ -100,7 +105,8 @@ def compute_template_args():
         'TOTAL_FROM_OUT_OF_STATE': f"{total_from_out_of_state:,}",
         'TOTAL_FROM_OUT_OF_STATE_PERCENT': total_from_out_of_state_percent,
         'TOTAL_POOLED': total_pooled_samples,
-        'TOTAL_INDIVIDUALS_POOLED': total_pooled_individuals
+        'TOTAL_INDIVIDUALS_POOLED': total_pooled_individuals,
+        'TOTAL_POOLED_POSITIVES': total_pooled_positives
     }
 
     #with open("daily_counts.json", "wt") as f:
