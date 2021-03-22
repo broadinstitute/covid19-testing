@@ -211,9 +211,6 @@
                             <figure class="highcharts-figure">
                                 <div id="chart-3"></div>
                             </figure>
-                            <figure class="highcharts-figure">
-                              <div id="chart-6"><!--pooled positive rate--></div>
-                          </figure>
 
                         </div>
                         <div class="text-secondary mt-5" style="margin:50px 10px">
@@ -359,7 +356,6 @@
     plotDailyPositiveRate(xAxis);
     plotPooledDailyVolume(xAxis);
     plotPooledIndividualVolume(xAxis);
-    plotPooledDailyPositiveRate(xAxis);
   }
   function plotCumulativeTests(xAxis) {
     const cumulativeTotals = []
@@ -746,7 +742,7 @@
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
             return [time, 100 * (x.poolPositives/x.samplesPooled)] 
           }),            
-          color: "#BB0000AA",
+          color: "#cf9bbc",
           lineWidth: 1
         }
       ]

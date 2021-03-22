@@ -211,9 +211,6 @@
                             <figure class="highcharts-figure">
                                 <div id="chart-3"></div>
                             </figure>
-                            <figure class="highcharts-figure">
-                              <div id="chart-6"><!--pooled positive rate--></div>
-                          </figure>
 
                         </div>
                         <div class="text-secondary mt-5" style="margin:50px 10px">
@@ -359,7 +356,6 @@
     plotDailyPositiveRate(xAxis);
     plotPooledDailyVolume(xAxis);
     plotPooledIndividualVolume(xAxis);
-    plotPooledDailyPositiveRate(xAxis);
   }
   function plotCumulativeTests(xAxis) {
     const cumulativeTotals = []
@@ -740,106 +736,18 @@
           lineWidth: 1
         },
         {
-          name: '% Positive (daily pooled positives/samples)',
+          name: '% Positive (Daily pooled positives/samples)',
           type: 'line',
           data: data.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
             return [time, 100 * (x.poolPositives/x.samplesPooled)] 
           }),            
-          color: "#BB0000AA",
+          color: "#cf9bbc",
           lineWidth: 1
         }
       ]
     });
   }
-  function plotPooledDailyPositiveRate(xAxis) {
-    // calculate the 7-day rolling average
-    const dataReverse = [...data].reverse();
-    let rollingAve = []; // assumption: the array, data, is sorted by date and without missing days
-    dataReverse.forEach( function(x, i) {
-      let j = i + 7;
-      if (j<dataReverse.length){
-        let week = dataReverse.slice(i, j);
-        let totalPositive = week.reduce(function(a, d){
-          a = a + d.positive;
-          return a;
-        }, 0);
-        let totalTest = week.reduce(function(a, d){
-          a = a + d.inconclusive+d.negative+d.positive;
-          return a;
-        }, 0);
-        rollingAve.unshift({
-          day: x.day,
-          positive: totalPositive,
-          total: totalTest
-        })
-      }
-    });
-    
-    // report the most recent rolling ave in the left-side report card
-    const mostRecent = rollingAve[rollingAve.length-1]; 
-    $("#rolling-ave").text(`${(100 * (mostRecent.positive/mostRecent.total)).toFixed(2)}%`);
 
-    // rendering
-    Highcharts.chart('chart-6', {
-      chart: {
-        height: '300px',
-      },
-      legend: {
-        floating: true,
-        align: 'left',
-        verticalAlign: 'top',
-        layout: 'vertical',
-        x: 60,
-        y: 20,
-        backgroundColor: '#ffffff'
-      },
-      title: {
-        text: 'Pooled Testing Daily Positive Rate'
-      },
-      plotOptions: {
-        column: {
-          borderWidth: 0,
-        },
-      },
-      xAxis: xAxis,
-      yAxis: [
-        {
-          endOnTick: false,
-          min: 0,
-          softMax: 5,
-          tickAmount: 5,
-
-          title: {
-            enabled: false,
-          },
-          labels: {
-            format: "{value} %",
-          }
-        }
-      ],
-      tooltip: {        
-        valueDecimals: 2,
-        valueSuffix: '%',
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-      },	   
-      series: [
-        {
-          name: '% Positive (daily pooled positives/samples)',
-          type: 'line',
-          data: data.map(function(x) { 
-            const time = new Date(x.day.replace(/,/g, '/')).getTime();
-            return [time, 100 * (x.poolPositives/x.samplesPooled)] 
-          }),            
-          color: "#e18b50", //"#BB0000AA",
-          lineWidth: 1
-        }
-      ]
-    });
-  }
 </script>
  </html>
