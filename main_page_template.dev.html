@@ -199,15 +199,21 @@
                             <figure class="highcharts-figure">
                                 <div id="chart-1"></div>
                             </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
                             <figure class="highcharts-figure">
-                                <div id="chart-2"></div>
+                              <div id="chart-2"></div>
                             </figure>
-                            <hr>
+                            <hr style="border-top: 5px solid #eeeeee">
                             <figure class="highcharts-figure">
                               <div id="chart-4"><!--pooled sample daily volume--></div>
                             </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
                             <figure class="highcharts-figure">
-                                <div id="chart-3"></div>
+                              <div id="chart-3"></div>
+                            </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
+                            <figure class="highcharts-figure">
+                              <div id="chart-6"></div>
                             </figure>
 
                         </div>
@@ -353,6 +359,7 @@
     plotDailyVolume(xAxis);
     plotDailyPositiveRate(xAxis);
     plotPooledDailyVolume(xAxis);
+    plotPooledDailyPositiveRate(xAxis);
   }
   function plotCumulativeTests(xAxis) {
     const cumulativeTotals = []
@@ -677,9 +684,66 @@
           }),            
           color: "#e18b50", //"#BB0000AA",
           lineWidth: 2
+        }
+      ]
+    });
+  }
+  function plotPooledDailyPositiveRate(xAxis) {
+
+    // rendering
+    Highcharts.chart('chart-6', {
+      chart: {
+        height: '300px',
+      },
+      legend: {
+        floating: true,
+        align: 'left',
+        verticalAlign: 'top',
+        layout: 'vertical',
+        x: 60,
+        y: 20,
+        backgroundColor: '#ffffff'
+      },
+      title: {
+        text: 'Daily Positive Rate from Pooled Samples'
+      },
+      plotOptions: {
+        column: {
+          borderWidth: 0,
         },
+        series: {
+            marker: {
+                enabled: false
+            }
+        }
+      },
+      xAxis: xAxis,
+      yAxis: [
         {
-          name: '% Positive (Daily pooled positives/samples)',
+          endOnTick: false,
+          min: 0,
+          softMax: 5,
+          tickAmount: 5,
+          title: {
+            enabled: false,
+          },
+          labels: {
+            format: "{value} %",
+          }
+        }
+      ],
+      tooltip: {        
+        valueDecimals: 2,
+        valueSuffix: '%',
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },	   
+      series: [
+        {
+          name: '% Positive (pooled positives/samples)',
           type: 'line',
           data: data.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
@@ -691,6 +755,7 @@
       ]
     });
   }
+  
 
 </script>
  </html>
