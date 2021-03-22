@@ -685,6 +685,11 @@
         column: {
           borderWidth: 0,
         },
+        series: {
+            marker: {
+                enabled: false
+            }
+        }
       },
       xAxis: xAxis,
       yAxis: [
@@ -732,6 +737,16 @@
             return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
           }),            
           color: "#e18b50", //"#BB0000AA",
+          lineWidth: 1
+        },
+        {
+          name: '% Positive (daily pooled positives/samples)',
+          type: 'line',
+          data: data.map(function(x) { 
+            const time = new Date(x.day.replace(/,/g, '/')).getTime();
+            return [time, 100 * (x.poolPositives/x.samplesPooled)] 
+          }),            
+          color: "#BB0000AA",
           lineWidth: 1
         }
       ]
