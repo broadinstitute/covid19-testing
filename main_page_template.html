@@ -160,16 +160,6 @@
 
                             </div>
                         </div>
-                        <!--  div class="card card-body mt-2" style="background-color: #FFFFFF">
-                            <h6 class="card-title">
-                                <span style="color:black">Tested </span>
-                                <span style="color:#00AA00">Negative </span>
-                            </h6>
-                            <div style="white-space: nowrap">
-                                <h3 class="card-main-info"></h3>
-                                <span class="card-secondary-info"></span>
-                            </div>
-                        </div -->
                         <div class="card card-body mt-2" style="background-color: #FFFFFF">
                             <h7 class="card-title">
                               <span style="color: gray;">Inconclusive &amp; Invalid </span>Tests
@@ -209,12 +199,23 @@
                             <figure class="highcharts-figure">
                                 <div id="chart-1"></div>
                             </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
                             <figure class="highcharts-figure">
-                                <div id="chart-2"></div>
+                              <div id="chart-2"></div>
                             </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
                             <figure class="highcharts-figure">
-                                <div id="chart-3"></div>
+                              <div id="chart-3"></div>
                             </figure>
+                            <hr style="border-top: 5px solid #eeeeee; border-bottom: 5px solid #eeeeee">
+                            <figure class="highcharts-figure">
+                              <div id="chart-4"><!--pooled sample daily volume--></div>
+                            </figure>
+                            <hr style="border-top: 5px solid #eeeeee">  
+                            <figure class="highcharts-figure">
+                              <div id="chart-6"></div>
+                            </figure>
+                            <hr style="border-top: 5px solid #eeeeee">
                         </div>
                         <div class="text-secondary mt-5" style="margin:50px 10px">
                             The numbers will not match the daily reports from the State of Massachusetts for several reasons:
@@ -357,6 +358,8 @@
     plotCumulativeTests(xAxis);
     plotDailyVolume(xAxis);
     plotDailyPositiveRate(xAxis);
+    plotPooledDailyVolume(xAxis);
+    plotPooledDailyPositiveRate(xAxis);
   }
   function plotCumulativeTests(xAxis) {
     const cumulativeTotals = []
@@ -400,7 +403,7 @@
             enabled: false,
             y: -5,
           },
-        },
+        }
       },
       tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
@@ -497,6 +500,91 @@
       });
     });
   }
+  function plotPooledDailyVolume(xAxis) {
+    Highcharts.chart('chart-4', {
+      global: {
+        useUTC: false
+      },
+      chart: {
+        height: '250px',
+      },
+      legend: {
+        floating: true,
+        align: 'left',
+        verticalAlign: 'top',
+        layout: 'vertical',
+        x: 60,
+        y: 30,
+        backgroundColor: '#ffffff'
+      },
+      title: {
+        text: 'Pooled Tests Daily Volume'
+      },
+      plotOptions: {
+        column: {
+          borderColor: '#439798',
+          borderWidth: 0,
+          grouping: false,
+          shadow: false
+        }
+      },
+      tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+      xAxis: xAxis,
+      yAxis: {
+        reversedStacks: false,
+        min: 0,
+        softMax: 2000,
+        tickInterval: 500,
+        title: {
+          enabled: false,
+        }
+      },
+      
+      series: [
+        {
+          name: 'Pooled Samples',
+          type: 'column',
+          data: data.map(function(x) { 
+            const time = new Date(x.day.replace(/,/g, '/')).getTime();
+            return [time, x.samplesPooled];
+          }),
+          color: "rgb(67, 122, 152, 0.5)", //"#00AA00AA",
+          dataLabels: {
+            enabled: false,
+          },
+          pointPadding: 0,
+        },
+        {
+          name: 'Individuals',
+          type: 'column',
+          data: data.map(function(x) { 
+            const time = new Date(x.day.replace(/,/g, '/')).getTime();
+            return [time, x.individualsPooled];
+          }),
+          color: "rgb(67, 122, 152)", //"#00AA00AA",
+          dataLabels: {
+            enabled: false,
+          },
+          pointPadding: 0.4,
+          pointPlacement: 0.3
+
+        },
+      ]
+    }, function(chart) {
+      var series = chart.series;
+      $.each(series, function(i, ser) {
+        $(ser.legendSymbol.element).attr('stroke-width','1');
+        $(ser.legendSymbol.element).attr('stroke','#439798');
+      });
+    });
+  }
+  
   function plotDailyPositiveRate(xAxis) {
     // calculate the 7-day rolling average
     const dataReverse = [...data].reverse();
@@ -546,6 +634,11 @@
         column: {
           borderWidth: 0,
         },
+        series: {
+            marker: {
+                enabled: false
+            }
+        }
       },
       xAxis: xAxis,
       yAxis: [
@@ -554,9 +647,6 @@
           min: 0,
           softMax: 5,
           tickAmount: 5,
-          // tickInterval: tickInterval,
-          // minorTickInterval: 5,
-          // minorTicks: false,
           title: {
             enabled: false,
           },
@@ -583,7 +673,7 @@
             return [time, 100 * x.positive/x.total] 
           }),            
           color: "#aaaaaa",
-          lineWidth: 2
+          lineWidth: 3
         },
         {
           name: '% Positive (Daily)',
@@ -593,10 +683,79 @@
             return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
           }),            
           color: "#e18b50", //"#BB0000AA",
+          lineWidth: 2
+        }
+      ]
+    });
+  }
+  function plotPooledDailyPositiveRate(xAxis) {
+
+    // rendering
+    Highcharts.chart('chart-6', {
+      chart: {
+        height: '300px',
+      },
+      legend: {
+        floating: true,
+        align: 'left',
+        verticalAlign: 'top',
+        layout: 'vertical',
+        x: 60,
+        y: 20,
+        backgroundColor: '#ffffff'
+      },
+      title: {
+        text: 'Daily Positive Rate from Pooled Samples'
+      },
+      plotOptions: {
+        column: {
+          borderWidth: 0,
+        },
+        series: {
+            marker: {
+                enabled: false
+            }
+        }
+      },
+      xAxis: xAxis,
+      yAxis: [
+        {
+          endOnTick: false,
+          min: 0,
+          softMax: 5,
+          tickAmount: 5,
+          title: {
+            enabled: false,
+          },
+          labels: {
+            format: "{value} %",
+          }
+        }
+      ],
+      tooltip: {        
+        valueDecimals: 2,
+        valueSuffix: '%',
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },	   
+      series: [
+        {
+          name: '% Positive (pooled positives/samples)',
+          type: 'line',
+          data: data.map(function(x) { 
+            const time = new Date(x.day.replace(/,/g, '/')).getTime();
+            return [time, 100 * (x.poolPositives/x.samplesPooled)] 
+          }),            
+          color: "#9f64a1",
           lineWidth: 1
         }
       ]
     });
   }
+  
+
 </script>
  </html>
