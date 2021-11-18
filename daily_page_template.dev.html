@@ -85,7 +85,8 @@
 <script>
     let data = {{DATA|tojson}};
     let today = new Date().toLocaleDateString();
-    let currentTime = new Date(today);
+    let currentTime = new Date();
+    currentTime.setHours(0,0,0,0);
     // console.log(data); // dev purpose only
     $('#today').text(today);
     let yesterday = data[data.length-2];
