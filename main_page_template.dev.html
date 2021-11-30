@@ -267,7 +267,7 @@
   let currentTime = new Date(new Date().toLocaleDateString());
   configFigureMenu();
   setChartGlobalConfig();
-  render("3M")
+  render("All");
   
   
   function configFigureMenu(){
@@ -530,7 +530,9 @@
       },
       tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td></tr>',
+        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td>' + 
+          '<td style="padding-left: 5px;min-width:60px;"><b>{point.y:,.0f}</b></td>' + 
+          '</tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -645,6 +647,7 @@
         {
           endOnTick: false,
           min: 0,
+          // max: 40,
           softMax: 5,
           tickAmount: 5,
           title: {
@@ -655,11 +658,12 @@
           }
         }
       ],
+
       tooltip: {        
         valueDecimals: 2,
-        valueSuffix: '%',
+        valueSuffix: '',
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+        pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.display}</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -670,7 +674,12 @@
           type: 'line',
           data: rollingAve.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
-            return [time, 100 * x.positive/x.total] 
+            // return [time, 100 * x.positive/x.total, x.positive] 
+            return {
+              x: time,
+              y: 100 * x.positive/x.total,
+              display: (100 * x.positive/x.total).toPrecision(3) + "%"
+            }
           }),            
           color: "#aaaaaa",
           lineWidth: 3
@@ -680,11 +689,16 @@
           type: 'line',
           data: data.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
-            return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
+            return {
+              x: time,
+              y: 100 * x.positive/(x.positive + x.negative + x.inconclusive),
+              display: (100 * x.positive/(x.positive + x.negative + x.inconclusive)).toPrecision(3) + "% " + `(${x.positive}/${x.positive + x.negative + x.inconclusive})`
+            }
           }),            
           color: "#e18b50", //"#BB0000AA",
           lineWidth: 2
         }
+      
       ]
     });
   }
@@ -737,6 +751,7 @@
         valueSuffix: '%',
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color}">{series.name}: </td><td style="padding-left: 5px;min-width:60px;"><b>{point.y}</b></td></tr>',
+
         footerFormat: '</table>',
         shared: true,
         useHTML: true
