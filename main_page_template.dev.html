@@ -680,7 +680,7 @@
           type: 'line',
           data: data.map(function(x) { 
             const time = new Date(x.day.replace(/,/g, '/')).getTime();
-            return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive)] 
+            return [time, 100 * x.positive/(x.positive + x.negative + x.inconclusive), x.positive] 
           }),            
           color: "#e18b50", //"#BB0000AA",
           lineWidth: 2
