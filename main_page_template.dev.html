@@ -264,7 +264,8 @@
 <script>
   //docs @ https://api.highcharts.com/highcharts/
   let data = {{DATA|tojson}};
-  let currentTime = new Date(new Date().toLocaleDateString());
+  // let currentTime = new Date(new Date().toLocaleDateString());
+  let currentTime = new Date(new Date().toLocaleDateString('en-US'));
   configFigureMenu();
   setChartGlobalConfig();
   render("All");
