@@ -84,7 +84,7 @@
 
 <script>
     let data = {{DATA|tojson}};
-    let today = new Date().toLocaleDateString();
+    let today = new Date().toLocaleDateString('en-US');
     let currentTime = new Date(today);
     // console.log(data); // dev purpose only
     $('#today').text(today);
