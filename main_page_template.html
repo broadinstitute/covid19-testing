@@ -496,8 +496,8 @@
     }, function(chart) {
       var series = chart.series;
       $.each(series, function(i, ser) {
-        $(ser.legendSymbol.element).attr('stroke-width','1');
-        $(ser.legendSymbol.element).attr('stroke','#439798');
+        $(ser.markerGroup.element).attr('stroke-width','1');
+        $(ser.markerGroup.element).attr('stroke','#439798');
       });
     });
   }
@@ -582,8 +582,8 @@
     }, function(chart) {
       var series = chart.series;
       $.each(series, function(i, ser) {
-        $(ser.legendSymbol.element).attr('stroke-width','1');
-        $(ser.legendSymbol.element).attr('stroke','#439798');
+        $(ser.markerGroup.element).attr('stroke-width','1');
+        $(ser.markerGroup.element).attr('stroke','#439798');
       });
     });
   }
