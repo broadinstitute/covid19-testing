@@ -427,10 +427,12 @@
           name: 'Cumulative Tests Completed',
           data: cumulativeTotals,
           color: "#439798", //"#00AA00AA",
+          turboThreshold: 10000
         }, {
           name: 'Cumulative Positives',
           data: cumulativePositives,
           color: "#e18b50", //"#BB0000AA",
+          turboThreshold: 10000
         }]
     });
   }
@@ -491,6 +493,7 @@
           dataLabels: {
             enabled: false,
           },
+          turboThreshold: 10000
         },
       ]
     }, function(chart) {
@@ -562,6 +565,7 @@
             enabled: false,
           },
           pointPadding: 0,
+          turboThreshold: 10000
         },
         {
           name: 'Individuals',
@@ -575,7 +579,8 @@
             enabled: false,
           },
           pointPadding: 0.4,
-          pointPlacement: 0.3
+          pointPlacement: 0.3,
+          turboThreshold: 10000
 
         },
       ]
@@ -683,7 +688,8 @@
             }
           }),            
           color: "#aaaaaa",
-          lineWidth: 3
+          lineWidth: 3,
+          turboThreshold: 10000
         },
         {
           name: '% Positive (Daily)',
@@ -697,7 +703,8 @@
             }
           }),            
           color: "#e18b50", //"#BB0000AA",
-          lineWidth: 2
+          lineWidth: 2,
+          turboThreshold: 10000
         }
       
       ]
@@ -766,7 +773,8 @@
             return [time, 100 * (x.poolPositives/x.samplesPooled)] 
           }),            
           color: "#9f64a1",
-          lineWidth: 1
+          lineWidth: 1,
+          turboThreshold: 10000
         }
       ]
     });
